@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sa-flicksapi
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flicksapi-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flicksapi
+  template:
+    metadata:
+      labels:
+        app: flicksapi
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "flicksapi"
+        dapr.io/app-port: "80"
+        #linkerd.io/inject: enabled
+
+    spec:
+      #serviceAccountName: sa-flicksapi
+      containers:
+      - name: main
+        image: xximjasonxx/flicksapi:v6
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: flicksapi-service
+spec:
+  selector:
+    app: flicksapi
+  ports:
+  - port: 80
+    targetPort: 80
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: flicksapi-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: flicks.farrellsoft.dev
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: flicksapi-service
+            port:
+              number: 80

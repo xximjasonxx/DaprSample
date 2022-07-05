@@ -1,0 +1,62 @@
+apiVersion: policy.linkerd.io/v1beta1
+kind: Server
+metadata:
+  name: movieapi-server
+  namespace: movieapi
+
+spec:
+  podSelector:
+    matchLabels:
+      app: movieapi
+  port: linkerd-admin
+  proxyProtocol: HTTP/1
+
+---
+
+apiVersion: policy.linkerd.io/v1beta1
+kind: ServerAuthorization
+metadata:
+  namespace: movieapi
+  name: movieapi-everyone-auth
+spec:
+  server:
+    name: movieapi-server
+  client:
+    unauthenticated: true
+
+---
+
+apiVersion: policy.linkerd.io/v1beta1
+kind: Server
+metadata:
+  name: movieapi-server-http
+  namespace: movieapi
+  labels:
+    app: movieapi
+    type: public
+
+spec:
+  podSelector:
+    matchLabels:
+      app: movieapi
+  port: 80
+  proxyProtocol: HTTP/1
+
+---
+
+apiVersion: policy.linkerd.io/v1beta1
+kind: ServerAuthorization
+metadata:
+  namespace: movieapi
+  name: flicksapi-auth
+spec:
+  server:
+    selector:
+      matchLabels:
+        app: movieapi
+        type: public
+  client:
+    meshTLS:
+      serviceAccounts:
+        - name: sa-flicksapi
+          namespace: flicksapi

@@ -1,0 +1,12 @@
+apiVersion: policy.linkerd.io/v1beta1
+kind: Server
+metadata:
+  name: movieapi-server
+  namespace: movieapi
+
+spec:
+  podSelector:
+    matchLabels:
+      app: movieapi
+  port: http
+  proxyProtocol: HTTP/1

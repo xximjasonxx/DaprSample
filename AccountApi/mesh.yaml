@@ -1,0 +1,62 @@
+apiVersion: policy.linkerd.io/v1beta1
+kind: Server
+metadata:
+  name: accountapi-server
+  namespace: accountapi
+
+spec:
+  podSelector:
+    matchLabels:
+      app: accountapi
+  port: linkerd-admin
+  proxyProtocol: HTTP/1
+
+---
+
+apiVersion: policy.linkerd.io/v1beta1
+kind: ServerAuthorization
+metadata:
+  namespace: accountapi
+  name: accountapi-everyone-auth
+spec:
+  server:
+    name: accountapi-server
+  client:
+    unauthenticated: true
+
+---
+
+apiVersion: policy.linkerd.io/v1beta1
+kind: Server
+metadata:
+  name: accountapi-server-http
+  namespace: accountapi
+  labels:
+    app: accountapi
+    type: public
+
+spec:
+  podSelector:
+    matchLabels:
+      app: accountapi
+  port: 80
+  proxyProtocol: HTTP/1
+
+---
+
+apiVersion: policy.linkerd.io/v1beta1
+kind: ServerAuthorization
+metadata:
+  namespace: accountapi
+  name: flicksapi-auth
+spec:
+  server:
+    selector:
+      matchLabels:
+        app: accountapi
+        type: public
+  client:
+    meshTLS:
+      serviceAccounts:
+        - name: sa-flicksapi
+          namespace: flicksapi
