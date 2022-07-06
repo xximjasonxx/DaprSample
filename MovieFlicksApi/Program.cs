@@ -1,5 +1,6 @@
 using MovieFlicksApi.Models;
 using MovieFlicksApi.Services;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +25,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseMetricServer();
 app.UseAuthorization();
 
 app.MapControllers();
