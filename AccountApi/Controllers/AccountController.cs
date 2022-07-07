@@ -1,4 +1,5 @@
 using AccountApi.Models;
+using Dapr.Client;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccountApi.Controllers;
@@ -8,6 +9,8 @@ namespace AccountApi.Controllers;
 public class AccountController : ControllerBase
 {
     private readonly ILogger<AccountController> _logger;
+    private readonly DaprClient _daprClient;
+
     private readonly IList<Account> _accounts = new List<Account>
     {
         new Account { Id = 1, FirstName = "Test", LastName = "User 1", MoviesWatched = new int[] { 1, 2, 3, 4 } },
@@ -21,9 +24,10 @@ public class AccountController : ControllerBase
         new Account { Id = 9, FirstName = "Test", LastName = "User 9", MoviesWatched = new int[] { 9, 2, 5, 8 } },
     };
 
-    public AccountController(ILogger<AccountController> logger)
+    public AccountController(ILogger<AccountController> logger, DaprClient daprClient)
     {
         _logger = logger;
+        _daprClient = daprClient;
     }
 
     [HttpGet]
@@ -35,10 +39,16 @@ public class AccountController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
     {
-        // simulate a heavy lookup operation
-        await Task.Delay((int)TimeSpan.FromSeconds(3).TotalMilliseconds);
+        var account = await _daprClient.GetStateAsync<Account>("account-statestore", $"account-{id}");
+        if (account == null)
+        {
+            // simulate a heavy lookup operation
+            await Task.Delay((int)TimeSpan.FromSeconds(3).TotalMilliseconds);
 
-        var account = _accounts.FirstOrDefault(x => x.Id == id);
+            account = _accounts.FirstOrDefault(x => x.Id == id);
+            await _daprClient.SaveStateAsync("account-statestore", $"account-{id}", account);
+        }
+
         if (account == null)
             return NotFound();
 

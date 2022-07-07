@@ -1,7 +1,5 @@
-﻿using Dapr;
-using Dapr.Client;
+﻿using Dapr.Client;
 using MovieFlicksApi.Models;
-using Newtonsoft.Json;
 
 namespace MovieFlicksApi.Services
 {
@@ -22,27 +20,12 @@ namespace MovieFlicksApi.Services
         {
             try
             {
-                var result = await _daprClient.GetStateAsync<GetMovieResponseModel>("statestore", $"movie-{movieId}");
-                _logger.LogInformation(result?.ToString());
-
-                if (result == null)
-                {
-                    var request = _daprClient.CreateInvokeMethodRequest(HttpMethod.Get, "movieapi", $"movie/{movieId}");
-                    result = await _daprClient.InvokeMethodAsync<GetMovieResponseModel>(request);
-
-                    await _daprClient.SaveStateAsync("statestore", $"movie-{movieId}", result);
-                }
-
-                return result;
+                var request = _daprClient.CreateInvokeMethodRequest(HttpMethod.Get, "movieapi", $"movie/{movieId}");
+                return await _daprClient.InvokeMethodAsync<GetMovieResponseModel>(request);
             }
             catch (Exception dex)
             {
-                do
-                {
-                    _logger.LogInformation(dex.Message);
-                    dex = dex.InnerException;
-                } while (dex != null);
-
+                _logger.LogError(dex.Message, dex);
                 throw;
             }
         }

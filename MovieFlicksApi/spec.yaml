@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: main
-        image: xximjasonxx/flicksapi:v6.1.3
+        image: xximjasonxx/flicksapi:arm-v1.0.0
         resources:
           limits:
             memory: "128Mi"

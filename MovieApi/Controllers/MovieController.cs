@@ -1,3 +1,4 @@
+using Dapr.Client;
 using Microsoft.AspNetCore.Mvc;
 using MovieApi.Models;
 using System;
@@ -8,6 +9,8 @@ namespace MovieApi.Controllers;
 [Route("[controller]")]
 public class MovieController : ControllerBase
 {
+    private readonly ILogger<MovieController> _logger;
+    private readonly DaprClient _daprClient;
 
     private readonly IList<Movie> _movies = new List<Movie>
     {
@@ -23,9 +26,10 @@ public class MovieController : ControllerBase
         new Movie { Id = 10, Title = "Avengers: Infinity War", Genre = "Action" }
     };
 
-    public MovieController(ILogger<MovieController> logger)
+    public MovieController(ILogger<MovieController> logger, DaprClient daprClient)
     {
-        
+        _logger = logger;
+        _daprClient = daprClient;
     }
 
     [HttpGet]
@@ -37,10 +41,16 @@ public class MovieController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
     {
-        // simulate a heavy lookup operation
-        await Task.Delay((int)TimeSpan.FromSeconds(2).TotalMilliseconds);
+        var movie = await _daprClient.GetStateAsync<Movie>("movie-statestore", $"movie-{id}");
+        if (movie == null)
+        {
+            // simulate a heavy lookup operation
+            await Task.Delay((int)TimeSpan.FromSeconds(2).TotalMilliseconds);
 
-        var movie = _movies.FirstOrDefault(x => x.Id == id);
+            movie = _movies.FirstOrDefault(x => x.Id == id);
+            await _daprClient.SaveStateAsync("movie-statestore", $"movie-{id}", movie);
+        }
+
         if (movie == null)
             return NotFound();
 
