@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: twitterapi-deployment
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: twitterapi
+  template:
+    metadata:
+      labels:
+        app: twitterapi
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "twitterapi"
+        dapr.io/app-port: "80"
+    spec:
+      containers:
+      - name: main
+        image: xximjasonxx/twitterapi:arm-v1.0.3
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: twitterapi-service
+spec:
+  selector:
+    app: twitterapi
+  ports:
+  - port: 80
+    targetPort: 80

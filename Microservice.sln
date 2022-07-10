@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountApi", "AccountApi\Ac
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieFlicksApi", "MovieFlicksApi\MovieFlicksApi.csproj", "{063F2C24-413C-4D79-975C-63B6DD97FE6E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitterApi", "TwitterApi\TwitterApi.csproj", "{F554A0F4-E740-4245-A1EC-1D13335EA18A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{063F2C24-413C-4D79-975C-63B6DD97FE6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{063F2C24-413C-4D79-975C-63B6DD97FE6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{063F2C24-413C-4D79-975C-63B6DD97FE6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F554A0F4-E740-4245-A1EC-1D13335EA18A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F554A0F4-E740-4245-A1EC-1D13335EA18A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F554A0F4-E740-4245-A1EC-1D13335EA18A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F554A0F4-E740-4245-A1EC-1D13335EA18A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
