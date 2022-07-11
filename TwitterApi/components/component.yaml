@@ -8,10 +8,18 @@ spec:
   version: v1
   metadata:
     - name: consumerKey
-      value: ""
+      secretKeyRef:
+        name: sec-twitter
+        key: consumerKey
     - name: consumerSecret
-      value: ""
+      secretKeyRef:
+        name: sec-twitter
+        key: consumerSecret
     - name: accessToken
-      value: ""
+      secretKeyRef:
+        name: sec-twitter
+        key: accessToken
     - name: accessSecret
-      value: ""
+      secretKeyRef:
+        name: sec-twitter
+        key: accessSecret
