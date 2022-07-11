@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: main
-        image: xximjasonxx/twitterapi:arm-v1.0.3
+        image: xximjasonxx/twitterapi:arm-v1.0.4
         resources:
           limits:
             memory: "128Mi"

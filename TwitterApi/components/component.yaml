@@ -23,3 +23,17 @@ spec:
       secretKeyRef:
         name: sec-twitter
         key: accessSecret
+
+---
+
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: timeupdate
+
+spec:
+  type: bindings.cron
+  version: v1
+  metadata:
+    - name: schedule
+      value: "@every 15s"
