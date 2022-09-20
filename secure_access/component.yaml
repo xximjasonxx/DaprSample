@@ -1,0 +1,19 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: azurekeyvault
+spec:
+  type: secretstores.azure.keyvault
+  version: v1
+  metadata:
+  - name: vaultName # Required
+    value: kv-sandbox-ym01
+  # See authentication section below for all options
+  - name: azureTenantId
+    value: 16b3c013-d300-468d-ac64-7eda0820b6d3
+  - name: azureClientId
+    value: cc5f69f3-2235-4a37-8fb9-5f3efbb31986
+  - name: azureClientSecret
+    secretKeyRef:
+      name: kvsandbox-secret
+      key: vaultSecret
