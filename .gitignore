@@ -5,3 +5,5 @@ obj/
 Properties/
 
 .user
+
+secret.yaml
