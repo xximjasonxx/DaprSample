@@ -29,8 +29,10 @@ app.MapGet("/readyz", () => Results.Ok("readyz"))
 
 app.MapGet("/weatherforecast", async () =>
 {
-    using var client = new DaprClient.CreateInvokeHttpClient();
-    var response = 
+    using var client = DaprClient.CreateInvokeHttpClient("webapp2");
+    var forecast = await client.GetFromJsonAsync<WeatherForecast[]>("weatherforecast", CancellationToken.None);
+
+    return forecast ?? Array.Empty<WeatherForecast>();
 })
 .WithName("GetWeatherForecast")
 .WithOpenApi();
