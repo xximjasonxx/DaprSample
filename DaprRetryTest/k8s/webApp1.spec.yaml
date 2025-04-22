@@ -1,0 +1,56 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: webapp1
+  labels:
+    app: retryapp
+spec:
+  type: ClusterIP
+  selector:
+    app: retryapp
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp1
+  labels:
+    app: retryapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: retryapp
+  template:
+    metadata:
+      labels:
+        app: retryapp
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "webapp1"
+        dapr.io/app-port: "8080"
+        dapr.io/enable-api-logging: "true"
+        dapr.io/sidecar-inject: "true"
+    spec:
+      containers:
+        - name: webapp1
+          image: crclientsandboxeus2mx01.azurecr.io/webapp1:v3
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8080
