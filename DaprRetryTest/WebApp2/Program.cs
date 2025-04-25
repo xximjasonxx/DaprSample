@@ -21,13 +21,14 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/weatherforecast", () =>
+app.MapGet("/weatherforecast", (ILogger<Program> logger) =>
 {
     var random = new Random();
     var value = random.Next(1, 100);
-    if (value < 50)
+    logger.LogInformation($"Random value: {value}");
+    if (value % 2 == 0)
     {
-    //    throw new Exception("Random exception occurred!");
+        throw new Exception("Random exception occurred!");
     }
 
     var forecast =  Enumerable.Range(1, 5).Select(index =>
