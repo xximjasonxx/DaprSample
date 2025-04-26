@@ -13,8 +13,5 @@ spec:
 
   targets:
     apps:
-      webapp1:
-        retry: defaultRetryPolicy
-
       webapp2:
         retry: defaultRetryPolicy
