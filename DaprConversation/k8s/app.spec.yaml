@@ -1,0 +1,55 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: svc-conversationapp
+  labels:
+    app: conversation-app
+spec:
+  type: ClusterIP
+  selector:
+    app: conversation-app
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-conversationapp
+  labels:
+    app: conversation-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: conversation-app
+  template:
+    metadata:
+      labels:
+        app: conversation-app
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "conversationapp"
+        dapr.io/app-port: "8080"
+        dapr.io/enable-api-logging: "true"
+    spec:
+      containers:
+        - name: webapp
+          image: crclientsandboxeus2mx01.azurecr.io/llm-conversation:v2
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+          #readinessProbe:
+          #  httpGet:
+          #    path: /readyz
+          #    port: 8080

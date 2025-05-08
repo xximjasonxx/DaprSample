@@ -1,0 +1,15 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: azopenai-component
+  namespace: dapr-conversation
+spec:
+  type: conversation.openai
+  version: v1
+  metadata:
+  - name: key
+    secretKeyRef:
+      name: openai-key
+      key: api-key
+  - name: model
+    value: gpt-4.1
